@@ -1,4 +1,4 @@
-namespace SodaMachine.Model
+namespace SodaMachine.Models
 {
     public class Soda
     {
@@ -10,6 +10,5 @@ namespace SodaMachine.Model
         /// Name of the soda.
         ///</summary>
         public int Nr { get; set; }
-
     }
 }
