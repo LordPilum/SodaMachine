@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SodaMachine.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -156,11 +157,5 @@ namespace SodaMachine
 
             }
         }
-    }
-    public class Soda
-    {
-        public string Name { get; set; }
-        public int Nr { get; set; }
-
     }
 }
