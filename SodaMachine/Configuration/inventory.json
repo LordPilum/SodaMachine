@@ -1,0 +1,17 @@
+[
+    {
+        "Name" : "coke",
+        "Nr" : 5,
+        "Price": 20
+    },
+    {
+        "Name": "sprite",
+        "Nr": 3,
+        "Price": 15
+    },
+    {
+        "Name": "fanta",
+        "Nr": 3,
+        "Price": 15
+    }
+]
