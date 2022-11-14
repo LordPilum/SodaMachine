@@ -59,19 +59,27 @@ namespace SodaMachine.Services
             return Inventory.SingleOrDefault(c => c.Name == name);
         }
 
-        internal void Purchase(Soda soda)
+        internal bool Purchase(Soda soda)
         {
+            if (soda.Nr == 0)
+                return false;
+
             Credit -= soda.Price;
             soda.Nr--;
 
             Inventory = Inventory.Replace(soda);
+            return true;
         }
 
-        internal void SmsPurchase(Soda soda)
+        internal bool SmsPurchase(Soda soda)
         {
+            if (soda.Nr == 0)
+                return false;
+
             soda.Nr--;
 
             Inventory = Inventory.Replace(soda);
+            return true;
         }
     }
 }
