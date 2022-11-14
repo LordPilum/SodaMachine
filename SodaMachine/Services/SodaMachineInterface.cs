@@ -62,7 +62,7 @@ namespace SodaMachine.Services
             // Add to credit.
             ulong.TryParse(input.Split(' ')[1], out var amount);
 
-            Console.WriteLine("Adding {0} to credit", amount);
+            Console.WriteLine("Adding {0} to credit.", amount);
 
             machine.AddCredit(amount);
 
@@ -81,24 +81,23 @@ namespace SodaMachine.Services
                 return (true, machine);
             }
 
-            if (soda.Nr == 0)
+            var status = machine.Purchase(soda);
+
+            if(status == Models.PurchaseStatus.NotEnoughCredit)
+            {
+                var amount = soda.Price - machine.Credit;
+                Console.WriteLine("Need {0} more credits.", amount);
+                return (true, machine);
+            }
+
+            if(status == Models.PurchaseStatus.OutOfStock)
             {
                 Console.WriteLine("No {0} left.", sodaName);
                 return (true, machine);
             }
 
-            if(machine.Credit < soda.Price)
-            {
-                var amount = soda.Price - machine.Credit;
-                Console.WriteLine("Need {0} more.", amount);
-                return (true, machine);
-            }
-
-            Console.WriteLine("Giving {0} out", sodaName);
-            machine.Purchase(soda);
-
-            Console.WriteLine("Giving {0} out in change.", machine.Credit);
-            machine.ReturnCredit();
+            var returned = machine.ReturnCredit();
+            Console.WriteLine("Giving {0} out in change.", returned);
 
             return (true, machine);
         }
@@ -113,16 +112,15 @@ namespace SodaMachine.Services
                 Console.WriteLine("{0} not in stock.", sodaName);
                 return (true, machine);
             }
+            
+            var status = machine.SmsPurchase(soda);
 
-            if (soda.Nr == 0)
+            if (status == Models.PurchaseStatus.NotEnoughCredit)
             {
-                Console.WriteLine("No {0} left.", sodaName);
+                var amount = soda.Price - machine.Credit;
+                Console.WriteLine("Need {0} more credits.", amount);
                 return (true, machine);
             }
-
-            Console.WriteLine("Giving {0} out", sodaName);
-            
-            machine.SmsPurchase(soda);
 
             return (true, machine);
         }
@@ -130,8 +128,8 @@ namespace SodaMachine.Services
         private static (bool, SodaMachineState) HandleRecall(SodaMachineState machine, string input)
         {
             // Give money back.
-            Console.WriteLine("Returning {0} to customer", machine.Credit);
-            machine.ReturnCredit();
+            var amount = machine.ReturnCredit();
+            Console.WriteLine("Returning {0} to customer.", amount);
 
             return (true, machine);
         }
