@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SodaMachine.Models;
 using SodaMachine.Services;
-using System.Collections.Generic;
 
 namespace SodaMachine.Tests
 {
@@ -9,7 +8,7 @@ namespace SodaMachine.Tests
     public class InventoryTests
     {
         [TestMethod]
-        public void ShouldSellThreeSodas()
+        public void ShouldSellExactlyThreeSodas()
         {
             var inventory = new List<Soda>
             {
@@ -31,20 +30,36 @@ namespace SodaMachine.Tests
 
             var coke = machine.GetSodaType("coke");
 
-            machine.AddCredit(20);
-            machine.Purchase(coke);
+            var total = machine.AddCredit(15);
+            total = machine.AddCredit(17);
 
-            machine.AddCredit(20);
-            machine.Purchase(coke);
+            Assert.AreEqual(total, 32u);
 
-            machine.AddCredit(20);
-            machine.Purchase(coke);
+            var status = machine.Purchase(coke);
+            Assert.AreEqual(status, PurchaseStatus.OK);
 
-            machine.AddCredit(20);
-            machine.Purchase(coke);
+            status = machine.Purchase(coke);
+            Assert.AreEqual(status, PurchaseStatus.NotEnoughCredit);
 
-            Assert.AreEqual(machine.Credit, 0);
-            Assert.AreEqual(machine.Credit, 0);
+            total = machine.AddCredit(20);
+            status = machine.Purchase(coke);
+            Assert.AreEqual(status, PurchaseStatus.OK);
+
+            total = machine.AddCredit(20);
+            status = machine.Purchase(coke);
+            Assert.AreEqual(status, PurchaseStatus.OK);
+
+            total = machine.AddCredit(20);
+            status = machine.Purchase(coke);
+
+            Assert.AreEqual(total, 32u);
+            Assert.AreEqual(status, PurchaseStatus.OutOfStock);
+
+            var remainder = machine.ReturnCredit();
+
+            Assert.AreEqual(remainder, 32u);
+
+            Assert.AreEqual(machine.Credit, 0u);
         }
     }
 }
